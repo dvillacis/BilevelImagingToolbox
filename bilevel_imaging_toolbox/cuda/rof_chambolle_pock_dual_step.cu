@@ -1,4 +1,4 @@
-__global__ void primal(float* p1, float* p2, const float* u_, 
+__global__ void dual(float* p1, float* p2, const float* u_, 
 		                       const double lambda, const double sigma,
 				                              const int X, const int Y)
 {

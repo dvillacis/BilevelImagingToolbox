@@ -1,4 +1,5 @@
 from bilevel_imaging_toolbox import cuda_solvers
+from bilevel_imaging_toolbox import solvers
 from bilevel_imaging_toolbox import image_utils
 
 
@@ -17,8 +18,11 @@ clambda = 0.4
 sigma = 1.9
 tau = 0.9/sigma
 
+#Call the solver using Chambolle-Pock
+#(cp_image,cp_values) = solvers.chambolle_pock_ROF(g_image,clambda,tau,sigma,200)
+
 # Call the solver using CUDA Chambolle-Pock
-(cp_image,cp_values) = cuda_solvers.chambolle_pock_ROF_CUDA(g_image,clambda,tau,sigma,200)
+(ccp_image,ccp_values) = cuda_solvers.chambolle_pock_ROF_CUDA(g_image,clambda,tau,sigma,200)
 
 # Plot resulting images
 #image_utils.show_collection([image,g_image,fb_image,cp_image],["original","gaussian noise","denoised FB","denoised CP"])
