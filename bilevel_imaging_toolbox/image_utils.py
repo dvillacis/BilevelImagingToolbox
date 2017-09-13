@@ -1,7 +1,7 @@
 from skimage import io
 from skimage import util
 from skimage.color import rgb2gray
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 def load_image(image_path):
     r""" Load image from a specified path
