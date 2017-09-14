@@ -20,6 +20,9 @@ def ROF_value(f,x,y,clambda):
     b = np.sum(np.sqrt(np.sum(y**2,axis=2)).flatten())
     return a+clambda*b
 
+def ROF_duality_gap(f,x,y,clambda):
+    pass
+
 def TVl1_value(f,x,y,clambda):
     r""" Compute the TV-l1 cost functional
 
@@ -60,6 +63,8 @@ def forward_backward_ROF(image, clambda, tau, iters=100):
     op = operators.make_finite_differences_operator(image.shape,'fn',1)
     tau = tau / op.bound**2
     y = op.val(image)
+    x = image
+
     vallog = np.zeros(iters)
 
     for i in range(iters):
@@ -94,6 +99,8 @@ def chambolle_pock_ROF(image, clambda, tau, sigma, iters=100):
     tau = tau / op.bound
     sigma = sigma / op.bound
     y = op.val(image)
+    x = image
+
     vallog = np.zeros(iters)
 
     x = image
@@ -151,5 +158,23 @@ def chambolle_pock_TVl1(image, clambda, tau, sigma, iters=100):
         vallog[i] = TVl1_value(image,x,op.val(x),clambda)
 
     print("Finished Chambolle-Pock TV-l1 denoising in %d iterations and %f sec"%(iters,timeit.default_timer()-start_time))
+
+    return (x,vallog)
+
+def forward_backward_l2_l2(image,clambda,tau,iters=100):
+    print("2D l2-l2 solver using Forward-Backward Splitting")
+
+    start_time = timeit.default_timer()
+
+    op = operators.make_finite_differences_operator(image.shape,'fn',1)
+    tau = tau / op.bound**2
+    vallog = np.zeros(iters)
+    x=image
+
+    for i in range(iters):
+        x = (x+tau*(image-clambda*op.conj(op.val(x))))/(1+tau)
+        vallog[i] = ROF_value(image,x,op.val(x),clambda)
+
+    print("Finished Forward-Backward l2-l2 denoising in %d iterations and %f sec"%(iters,timeit.default_timer()-start_time))
 
     return (x,vallog)

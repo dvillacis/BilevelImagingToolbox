@@ -1,7 +1,8 @@
 from skimage import io
 from skimage import util
 from skimage.color import rgb2gray
-#import matplotlib.pyplot as plt
+from skimage import exposure
+import matplotlib.pyplot as plt
 
 def load_image(image_path):
     r""" Load image from a specified path
@@ -27,6 +28,7 @@ def save_image(image, image_path):
     image_path : string
             Path location where th eimage will be saved
     """
+    image = exposure.rescale_intensity(image)
     io.imsave(image_path, image)
 
 def show_image(image, title=""):
