@@ -3,8 +3,8 @@ from bilevel_imaging_toolbox import image_utils
 import timeit
 import numpy as np
 
-s_image_list = ['../examples/images/circle.png','../examples/images/cameraman.png','../examples/images/lena.png']
-n_trials = 100 
+s_image_list = ['../examples/images/Playing_Cards_1.png','../examples/images/Playing_Cards_2.png','../examples/images/Playing_Cards_3.png']
+n_trials = 4
 n_iters = 100
 
 print('Testing FB ROF CPU')
