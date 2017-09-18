@@ -14,7 +14,9 @@ Implementations for 2 dimensional TV-l1 Model
 
 # Installation
 
+```bash
 python setup.py
+```
 
 # User Guide
 
