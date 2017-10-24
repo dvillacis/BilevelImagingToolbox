@@ -3,7 +3,9 @@ import matplotlib.pyplot as plt
 from matplotlib2tikz import save as tikz_save
 
 def plot_history(values):
-    plt.plot(values)
+    worst = np.max(values)
+    db = lambda v : 10*np.log(v/worst)
+    plt.plot(db(values))
     plt.grid()
     plt.show()
 
@@ -24,7 +26,7 @@ def plot_collection(values_list, values_names, title="",save_tikz=False,tikz_pat
     #ax.title = title
     plt.xlabel('Iterations')
     plt.ylabel('Cost Function (log scaled)')
-    #plt.show()
+    plt.show()
     plt.grid(True)
     if save_tikz:
         tikz_save(tikz_path+title+'.tex')

@@ -1,4 +1,5 @@
 import numpy as np
+from scipy import linalg
 import timeit
 from bilevel_imaging_toolbox import operators
 
@@ -176,5 +177,82 @@ def forward_backward_l2_l2(image,clambda,tau,iters=100):
         vallog[i] = ROF_value(image,x,op.val(x),clambda)
 
     print("Finished Forward-Backward l2-l2 denoising in %d iterations and %f sec"%(iters,timeit.default_timer()-start_time))
+
+    return (x,vallog)
+
+def ista_LASSO(x0,A,b,clambda,iters = 100):
+    r""" Lasso Problem solver using ISTA Method:
+
+    min 1/2 \|Ax-b\|_2^2 + clambda \|x\|_1
+
+    Parameters
+    ----------
+    A : numpy array
+        Matrix multiplying x variable
+    b : numpy array
+        Vector used for the linear fit
+    x0 : numpy array
+        Initial iteration point
+    clambda : float
+        The non-negative regularization parameter
+    iters : int
+        Number of iterations allowed
+
+    """
+    print("LASSO solver using ISTA Method")
+
+    start_time = timeit.default_timer()
+
+    x = x0
+    L = linalg.norm(A) ** 2  #Lipschitz constant
+    vallog = np.zeros(iters)
+
+    for i in range(iters):
+        x = operators.soft_thresholding(clambda/L, x + np.dot(A.T,b-A.dot(x))/L)
+        vallog[i] = 0.5 * linalg.norm(A.dot(x)-b) ** 2 + clambda * linalg.norm(x,1)
+
+    print("Finished ISTA LASSO solver in %d iterations and %f sec"%(iters,timeit.default_timer()-start_time))
+
+    return (x,vallog)
+
+def fista_LASSO(x0,A,b,clambda,iters=100):
+    r""" Lasso Problem solver using ISTA Method:
+
+    min 1/2 \|Ax-b\|_2^2 + clambda \|x\|_1
+
+    Parameters
+    ----------
+    A : numpy array
+        Matrix multiplying x variable
+    b : numpy array
+        Vector used for the linear fit
+    x0 : numpy array
+        Initial iteration point
+    clambda : float
+        The non-negative regularization parameter
+    iters : int
+        Number of iterations allowed
+
+    """
+    print("LASSO solver using ISTA Method")
+
+    start_time = timeit.default_timer()
+
+    x = x0
+    z = x.copy()
+    t = 1
+    L = linalg.norm(A) ** 2 #Lipschitz constant
+    vallog = np.zeros(iters)
+
+    for i in range(iters):
+        x_old = x.copy()
+        z = z + A.T.dot(b-A.dot(z)) / L
+        x = operators.soft_thresholding(clambda/L, z)
+        t0 = t
+        t = (1 + np.sqrt(1+4*t**2))/2
+        z = x + ((t0 -1)/t)*(x-x_old)
+        vallog[i] = 0.5 * linalg.norm(A.dot(x)-b) ** 2 + clambda * linalg.norm(x,1)
+
+    print("Finished ISTA LASSO solver in %d iterations and %f sec"%(iters,timeit.default_timer()-start_time))
 
     return (x,vallog)

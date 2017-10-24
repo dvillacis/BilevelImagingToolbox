@@ -115,3 +115,16 @@ def prox_project(clambda, z):
     y[:,:,0] = np.multiply(z[:,:,0],fact)
     y[:,:,1] = np.multiply(z[:,:,1],fact)
     return y
+
+def soft_thresholding(clambda, z):
+    r""" Soft-Thresholding Operator
+
+    Parameters
+    ----------
+    clambda : float
+        Regularization Parameter
+    z : numpy array
+        data
+
+    """
+    return np.sign(z)*np.maximum(np.abs(z)-clambda,0)
